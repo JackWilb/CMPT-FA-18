@@ -1,9 +1,14 @@
 /**
  * Generate the co-primes from (1,1) to (m,n)
  * 
- * [YOUR NAME GOES HERE]
+ * Jack Wilburn
  *
  */
+
+
+import java.util.*;
+
+
 public class CoPrimes {
 	public static void main(String[] args) {
 		if (args.length != 2) {
@@ -15,12 +20,26 @@ public class CoPrimes {
 		int m = Integer.parseInt(args[0]);
 		int n = Integer.parseInt(args[1]);
 		
-		/**
-		 * Provide the necessary logic to generate the co-prime 
-		 * pairs from (1,1) to (m,n).
-		 * 
-		 * This will likely involve additional method(s)
-		 */
+		for (int i = m; i > 0; i--) {
+			for (int j = 1; j <= n; j++) {
+				if (gcd(i,j) == 1) {
+					System.out.print("* ");
+				} else {
+					System.out.print("  ");
+				}
+			}
+			System.out.print("\n");
+		}
+		
+	}
+	
+	public static int gcd(int x, int y) {
+		while (y != 0) {
+			int a = y;
+			y = x % y;
+			x = a;
+		}
+		return x;
 	}
 
 }

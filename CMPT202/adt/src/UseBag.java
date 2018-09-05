@@ -7,7 +7,7 @@
 public class UseBag {
 
 	public static void main(String[] args) {
-		Bag bag = new ArrayBag();
+		Bag bag = new ArrayListBag();
 		
 		System.out.println("Adding apples");
 		bag.add("apples");

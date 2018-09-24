@@ -181,7 +181,7 @@ public class LinkedList implements List {
 		// if no elements then it's empty
 		return numberOfElements == 0;
 	}
-
+	
 	@Override
 	// Count how many times the item occurs in the list
 	public int getFrequency(Object item) {

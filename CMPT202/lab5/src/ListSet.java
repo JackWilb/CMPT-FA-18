@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Iterator;
 
 // ListSet by Jack Wilburn and Greg Nola
@@ -6,81 +7,53 @@ import java.util.Iterator;
 // ListSet implementation of Set class with Iterator
 public class ListSet<T> implements Set<T> {
 	
-	// Initialize variables
-	public static final int CAPACITY_MULTIPLIER = 2;
-	public static final int DEFAULT_CAPACITY = 15;
+	private ArrayList<T> elements;
 	
-	private int size = 0;
-	private int numberOfElements = 0;
-	private T[] elements;
-	
-	// Without size parameter create an ListSet of default size
 	public ListSet() {
-		this(DEFAULT_CAPACITY);
+		elements = new ArrayList<T>();
 	}
-	
-	// Create ListSet of specified size
+
 	public ListSet(int size) {
-		if (size < 0) {
-			throw new IllegalArgumentException("Capacity must be >= 0");
-		} else {
-			this.size = size;
-			elements = (T[]) (new Object[size]);
-		}
+		elements = new ArrayList<T>(size);
 	}
 	
-	
-	// Method to add item to an ListSet
+	@Override
 	public void add(T element) {
-		ensureCapacity();
 		if (!contains(element) && element != null) {
-			elements[numberOfElements] = element;
-				numberOfElements++;
-		}
-		
-	}
-
-	// Method to add a whole array to the ListSet
-	public void addAll(T[] elements) {
-		for (int i = 0; i < elements.length; i++) {
-			add(elements[i]);	
+			elements.add(element);
 		}
 	}
 
-	// Method to see if ListSet contains an element
+	@Override
+	public void addAll(T[] newElements) {
+		for (T i :newElements) {
+			this.add(i);
+		}
+	}
+
+	@Override
 	public boolean contains(T element) {
-		if (indexOf(element) > -1)
-			return true;
-		else
-			return false;
+		return elements.contains(element);
 	}
 
-	// Method to getsize of an ListSet
+	@Override
 	public int getSize() {
-		return numberOfElements;
+		return elements.size();
 	}
 
-	// Method to remove an element from an Array
+	@Override
 	public void remove(T element) {
-		int index = indexOf(element);
-		
-		if (index > -1 && element != null) {
-			numberOfElements--;
-			elements[index] = elements[numberOfElements];
-		}
-
-		return;
-		
+		elements.remove(element);
 	}
 
-	// Unions 2 Sets
+	@Override
 	public Set<T> union(Set<T> anotherSet) {
 		Set<T> newSet = anotherSet.difference(this);
-		newSet.addAll(this.elements);
+		newSet.addAll((T[]) this.elements.toArray());
 		return newSet;
 	}
 
-	// Intersects 2 sets
+	@Override
 	public Set<T> intersection(Set<T> anotherSet) {
 		Set<T> newSet = new ListSet<T>();
 		for (T i : this.elements) {
@@ -91,7 +64,7 @@ public class ListSet<T> implements Set<T> {
 		return newSet;
 	}
 
-	// Difference anotherSet \ this
+	@Override
 	public Set<T> difference(Set<T> anotherSet) {
 		Set<T> newSet = new ListSet<T>();
 		for (T i : this.elements) {
@@ -101,75 +74,12 @@ public class ListSet<T> implements Set<T> {
 		}
 		return newSet;
 	}
-	
-	// Return index of an object
-	private int indexOf(T element) {
-		int index = -1;
-		if (element != null) {
-			for (int i = 0; i < numberOfElements; i++) {
-				if (elements[i].equals(element)) {
-					index = i;
-					break;
-				}
-			}
-		}
-		
-		
-		return index;
-	}
-	
-	// Ensures that there is enough space for a new element or expands the arrray
-	private void ensureCapacity() {
-		if (numberOfElements == size) {
-			T[] newArray = (T[]) new Object[(numberOfElements+1) * CAPACITY_MULTIPLIER];
-			System.arraycopy(elements,0,newArray,0,numberOfElements);
-			elements = newArray;
-		}
-	}
-	
-	
-	// new code
-	
-	
-	// Make new iterator
-	public Iterator<T> iterator() {
-		return new ListSetIterator();
-	}
-	
-	/**
-	 * Inner class that generates an iteration of the set.
-	 */
-	private class ListSetIterator implements Iterator<T>
-	{
-		private int index = 0;
-		
-		/**
-		 * Determines if there are more elements
-		 * in the iteration.
-		 * 
-		 * @return true if there are more elements, false otherwise.
-		 */
-		public boolean hasNext() {
-			return (index < numberOfElements);
-		}
 
-		/**
-		 * Returns the next element in the iteration.
-		 * 
-		 * @throws java.util.NoSuchElementException if there are no more elements in the iteration.
-		 */
-		public T next() {
-			if (hasNext()) {
-				T nextItem = elements[index];
-				index++;
-				
-				return nextItem;
-			}
-			else
-				throw new java.util.NoSuchElementException("No items remaining in the iteration.");
-			
-		}
-		
+	@Override
+	public Iterator<T> iterator() {
+		return elements.iterator();
 	}
+	
+	
 	
 }

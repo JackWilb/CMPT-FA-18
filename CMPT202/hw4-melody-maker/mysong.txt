@@ -1,0 +1,11 @@
+0.3 E 4 NATURAL false
+0.3 E 4 NATURAL false
+0.6 E 4 NATURAL false
+0.3 E 4 NATURAL false
+0.3 E 4 NATURAL false
+0.6 E 4 NATURAL false
+0.3 E 4 NATURAL false
+0.3 G 4 NATURAL false
+0.3 C 4 NATURAL false
+0.3 D 4 NATURAL false
+0.6 E 4 NATURAL false

@@ -12,7 +12,7 @@ public class BinaryTreeExample {
 	public static void main(String[] args) throws Exception {
 		//create the Bridges object
 		// Use YOUR API Sha1 key and username
-		Bridges bridge = new Bridges(0, "Username","API Key");
+		Bridges bridge = new Bridges(0, "Jackow","1498340097205");
 
 		// create elements
 		// First parameter is String depicted when using mouseover with bridges animation
@@ -29,11 +29,53 @@ public class BinaryTreeExample {
 		BinTreeElement<String> rTree = new BinTreeElement<String>("R", "Ramen");
 		BinTreeElement<String> tTree = new BinTreeElement<String>("T", "Tea");
 
+		
 		// link elements
 		rTree.setRight(tTree);
 		
 		root.setLeft(fTree);
 		root.setRight(rTree);
+		
+		// Print Levels
+		tree.printLevels();
+		
+		// Get left most data
+		System.out.println(tree.getLeftMostData());
+		
+		// Get right most data
+		System.out.println(tree.getRightMostData());
+		
+		// Get height
+		System.out.println(tree.getHeight());
+		
+		// Get size
+		System.out.println(tree.getSize());
+		
+		// Remove right most node
+		tree.removeRightMostNode();
+		
+		// Iterators
+		System.out.println("Pre Order");
+		Iterator iter = tree.getPreOrderIterator();
+		while (iter.hasNext()) {
+			System.out.println(iter.next());
+		}
+		System.out.println();
+		
+		System.out.println("In Order");
+		iter = tree.getInOrderIterator();
+		while (iter.hasNext()) {
+			System.out.println(iter.next());
+		}
+		System.out.println();
+		
+		System.out.println("Post Order");
+		iter = tree.getPostOrderIterator();
+		while (iter.hasNext()) {
+			System.out.println(iter.next());
+		}
+		System.out.println();
+		
 		
 		if (tree.getRoot() != null) {
 			// make sure we have a data structure to visualize!

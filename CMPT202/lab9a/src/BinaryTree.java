@@ -36,7 +36,7 @@ public class BinaryTree<T>  {
 		 */
 		printLevelHelper(root,0);
 	}
-
+	
 	/**
 	 * Helper method to print the levels
 	 * @param node
@@ -48,7 +48,8 @@ public class BinaryTree<T>  {
 			System.out.println(node.getValue()); // i.e. "visit"
 
 			// now set the node to yellow as well as set the label to the level
-			// YOUR CODE GOES HERE
+			node.getVisualizer().setColor("yellow");
+			node.setLabel(Integer.toString(level));
 
 			printLevelHelper(node.getRight(), level + 1);
 		}
@@ -73,9 +74,12 @@ public class BinaryTree<T>  {
 	 * @return
 	 */
 	private T getLeftMostHelper(BinTreeElement<T> node) {
-		// YOUR CODE GOES HERE
-
-		return null;
+		if (node.getLeft() != null) {
+			return getLeftMostHelper(node.getLeft());
+		} else {
+			node.getVisualizer().setColor("green");
+			return node.getValue();
+		}
 	}
 	
 	/**
@@ -84,10 +88,24 @@ public class BinaryTree<T>  {
 	 * @return
 	 */
 	public int getSize() {
-		return -1;
-		
-		// YOUR CODE GOES HERE
+		if (root == null) {
+			return 0;
+		} else
+			return getSizeHelper(root);
 	}
+	
+	
+	private int getSizeHelper(BinTreeElement<T> node) {
+		    if (node == null)
+		        return 0;
+		    else {
+		        int Size = getSizeHelper(node.getLeft()) + getSizeHelper(node.getRight());
+
+		        return Size + 1;
+		    }
+		}
+	
+	
 
 	/**
 	 * Returns the height of the tree.
@@ -95,21 +113,48 @@ public class BinaryTree<T>  {
 	 * @return
 	 */
 	public int getHeight() {
-		return -1;
-		
-		// YOUR CODE GOES HERE
+		if (root == null) {
+			return 0;
+		} else
+			return getHeightHelper(root) - 1;
 	}
 	
 	
+	private int getHeightHelper(BinTreeElement<T> node) {
+		    if (node == null)
+		        return 0;
+		    else {
+		        int maxHeight = Math.max(getHeightHelper(node.getLeft()), getHeightHelper(node.getRight()));
+
+		        return maxHeight + 1;
+		    }
+		}
+
 	/**
 	 * Highlights the right most node to green and
 	 * returns the value associated with the node.
 	 * @return
 	 */
 	public T getRightMostData() {
-		return null;
+		if (root == null)
+			return null;
+		else
+			return getRightMostHelper(root);
+	}
 
-		// YOUR CODE GOES HERE
+	/**
+	 * Helper method to get the value and highlight the
+	 * node to green.
+	 * @param node
+	 * @return
+	 */
+	private T getRightMostHelper(BinTreeElement<T> node) {
+		if (node.getRight() != null) {
+			return getRightMostHelper(node.getRight());
+		} else {
+			node.getVisualizer().setColor("blue");
+			return node.getValue();
+		}
 	}
 
 
@@ -167,9 +212,47 @@ public class BinaryTree<T>  {
 	 * @return
 	 */
 	public T removeRightMostNode() {
-		return null;
+		if (root == null)
+			return null;
+		else if (root.getRight() == null) {
+			// special case - the root is the right most node
 
-		// YOUR CODE GOES HERE
+			T data = root.getValue();
+
+			root = root.getLeft();
+
+			return data;
+		}
+		else {
+			// call helper method
+			return removeRightMostNodeHelper(root);
+		}
+	}
+
+	/**
+	 * Private helper method to remove the left most node in the tree
+	 * @param node
+	 * @return
+	 */
+	private T removeRightMostNodeHelper(BinTreeElement<T> node) {
+		if ((node.getRight()).getRight() == null) {
+			// node is the parent whose reference must be adjusted
+
+			// node.getRight() is a reference to the right-most node
+
+			// retrieve the value
+			T data = node.getRight().getValue();
+
+			// we must adjust the right child of node so that it
+			// now refers to the left child of the node being deleted
+			node.setRight((node.getRight()).getLeft());
+
+			return data;
+		}
+		else {
+			// continue going right
+			return removeRightMostNodeHelper(node.getRight());
+		}
 	}
 
 
@@ -178,15 +261,11 @@ public class BinaryTree<T>  {
 	}
 
 	public Iterator<T> getInOrderIterator() {
-		return null;
-		
-		// YOUR CODE GOES HERE
+		return new InOrderIterator();
 	}
 	
 	public Iterator<T> getPostOrderIterator() {
-		return null;
-		
-		// YOUR CODE GOES HERE
+		return new PostOrderIterator();
 	}
 
 	private class PreOrderIterator implements Iterator<T>
@@ -211,6 +290,74 @@ public class BinaryTree<T>  {
 				elements[next++] = node.getValue();
 				preOrder(node.getLeft());
 				preOrder(node.getRight());
+			}
+		}
+
+		public boolean hasNext() {
+			return (next < getSize());
+		}
+
+		public T next() {
+			return elements[next++];
+		}
+	}
+	
+	private class InOrderIterator implements Iterator<T>
+	{
+		private T[] elements;
+		private int next;
+
+		private InOrderIterator() {
+			// create an array large enough to hold all elements in the tree
+			elements = (T[])new Object[getSize()];
+			next = 0;
+
+			// now perform an inorder traversal
+			inOrder(root);
+
+			// reset next back to the beginning of the array
+			next = 0;
+		}
+
+		private void inOrder(BinTreeElement<T> node) {
+			if (node != null) {
+				inOrder(node.getLeft());
+				elements[next++] = node.getValue();
+				inOrder(node.getRight());
+			}
+		}
+
+		public boolean hasNext() {
+			return (next < getSize());
+		}
+
+		public T next() {
+			return elements[next++];
+		}
+	}
+	
+	private class PostOrderIterator implements Iterator<T>
+	{
+		private T[] elements;
+		private int next;
+
+		private PostOrderIterator() {
+			// create an array large enough to hold all elements in the tree
+			elements = (T[])new Object[getSize()];
+			next = 0;
+
+			// now perform an preorder traversal
+			postOrder(root);
+
+			// reset next back to the beginning of the array
+			next = 0;
+		}
+
+		private void postOrder(BinTreeElement<T> node) {
+			if (node != null) {
+				postOrder(node.getLeft());
+				postOrder(node.getRight());
+				elements[next++] = node.getValue();
 			}
 		}
 

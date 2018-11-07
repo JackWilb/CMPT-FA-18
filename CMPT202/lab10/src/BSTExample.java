@@ -57,9 +57,10 @@ public class BSTExample {
 		// i.e. isEmpty(), size(), iterator(), contains(), remove(), 
 		
 		tree.contains(10);
+		//System.out.println(tree.remove(15));
 		//System.out.println(tree.remove(20));
-		System.out.println(tree.remove(28));
-		//System.out.println(tree.remove(50));
+		//System.out.println(tree.remove(28));
+		System.out.println(tree.remove(50));
 		
 		System.out.println(tree.getLargest());
 		System.out.println(tree.getSmallest());

@@ -202,40 +202,49 @@ public class BinarySearchTree <K extends Comparable<? super K>> implements Searc
 	}
 
 	public K remove(K key) {
-		if (!contains(key)) {
-			return null;
-		} else {
+		if (contains(key)) {
 			root = removeHelper(key, root);
 			return key;
-		}
-	}
-	
-	private BSTElement<K, String> removeHelper(K key, BSTElement<K, String> root) {
-		if (root == null) {
-			return root;
-		} else {
-			if (key.compareTo(root.getKey()) < 0) {
-				BSTElement<K, String> left = removeHelper(key, root.getLeft());
-				return left;
-			} else if (key.compareTo(root.getKey()) > 0) {
-				BSTElement<K, String> right = removeHelper(key, root.getRight());
-				return right;
-			} else if (root.getLeft() != null && root.getRight() != null) {
-				return root;
-				
-			} else {
-				if (root.getLeft() != null) {
-					BSTElement<K, String> left = root.getLeft();
-					return left;
-				} else {
-					BSTElement<K, String> right = root.getRight();
-					return right;
-				}
-			}
- 		}
+		} else
+			return null;
 		
 	}
-
+	
+	private BSTElement<K, String> removeHelper(K key, BSTElement<K, String> node) {
+		if (node == null) {
+			return null;
+		} else {
+			if (key.compareTo(node.getKey()) < 0) {
+				node.setLeft(removeHelper(key, node.getLeft()));
+				
+			} else if (key.compareTo(node.getKey()) > 0) {
+				node.setRight(removeHelper(key, node.getRight()));
+				
+			} else if (node.getLeft() != null && node.getRight() != null) {
+				BSTElement<K, String> leftMostNode = node.getRight();
+				
+				while (leftMostNode.getLeft() != null) {
+					leftMostNode = leftMostNode.getLeft();
+				}
+				
+				node.setKey(leftMostNode.getKey());
+				node.setRight(removeHelper(leftMostNode.getKey(), node.getRight()));
+				
+			} else {
+				if (node.getLeft() != null) {
+					node = node.getLeft();
+				} else {
+					node = node.getRight();
+				}
+ 				
+				
+			}
+			return node;
+		}
+		
+	}
+	
+	
 	public int size() {
 		if (root == null) {
 			return 0;

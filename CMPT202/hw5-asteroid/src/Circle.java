@@ -1,6 +1,6 @@
 /**
- * Simple representation of a Circle.
- * 
+ *
+ * Created by alex on 9/8/16.
  */
 import java.awt.*;
 

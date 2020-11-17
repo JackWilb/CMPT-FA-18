@@ -102,18 +102,4 @@ public  abstract class Polygon implements Shape {
 		double area = findArea();
 		return new Point(Math.abs(sum.x/(6*area)),Math.abs(sum.y/(6*area)));
 	}
-	
-	// Detect if there was a collision
-
-	public boolean collision(Polygon ship) {
-
-        // get the Point objects for the Ship
-		Point[] points = ship.getPoints();
-		for(Point p : points) {
-			if(this.contains(p)) {
-				return true;
-			}
-		}
-		return false;
-	}
 }

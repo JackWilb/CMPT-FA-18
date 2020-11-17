@@ -12,15 +12,22 @@ import java.util.*;
 public class Asteroids extends Game {
 	public static final int SCREEN_WIDTH = 800;
 	public static final int SCREEN_HEIGHT = 600;
-	private boolean collision = false;
-	private int collisionCounter = 0;
+	
+	private static final int COLLISION_PERIOD = 100;
 
 	static int counter = 0;
+	
+	// how we track asteroid collisions
+	private boolean collision = false;
+	private static int collisionTime = COLLISION_PERIOD;
+	
+	public Star[] stars;
+	
+	public int lives = 5;
 
 	private java.util.List<Asteroid> randomAsteroids = new ArrayList<Asteroid>();
 	
 	private Ship ship;
-	private Star[] stars;
 
 	public Asteroids() {
 		super("Asteroids!",SCREEN_WIDTH,SCREEN_HEIGHT);
@@ -32,10 +39,11 @@ public class Asteroids extends Game {
 		
 		// create the ship
 		ship = createShip();
-		this.addKeyListener(ship);
 		
-		// create stars
-		stars = createStars(1000, 3);
+		// register the ship as a KeyListener
+		this.addKeyListener(ship);
+
+		stars = createStars(200,3);
 	}
 	
 	// private helper method to create the Ship
@@ -98,46 +106,98 @@ public class Asteroids extends Game {
 		counter++;
 		brush.setColor(Color.white);
 		brush.drawString("Counter is " + counter,10,10);
-		
-		for (Star s : stars) {
-			s.paint(brush, Color.white);
-		}
 
 		// display the random asteroids
 		for (Asteroid asteroid : randomAsteroids) {
 			asteroid.paint(brush,Color.white);
 			asteroid.move();
-			if (asteroid.collision(ship)) {
-				collision = true;
-				collisionCounter = 100;
-			}
+			
+			// get collision status
+			if(!collision) {
+                collision = asteroid.collision(ship);
+            }
 		}
 		
-		// have the ship appear on the screen
-		if (collision || collisionCounter > 0) {
-			ship.paint(brush, Color.red);
-			collisionCounter--;
-		} else {
-			ship.paint(brush, Color.magenta);
-		}
+		
+       if(collision) {
+           ship.paint(brush, Color.red);
+           collisionTime -= 1;
+           if(collisionTime <= 0) {
+               collision = false;
+               collisionTime = COLLISION_PERIOD;
+               lives--;
+           }
+       } else {
+           ship.paint(brush, Color.magenta);
+       }
+       
 		ship.move();
-		collision = false;
+
+		// Display stars
+		for(Star star : stars) {
+			if(Math.random() > 0.5) {
+				star.paint(brush, Color.white);
+			} else {
+				star.paint(brush, Color.gray);
+			}
+			
+		}	
+
+		ArrayList<Integer> bulletremovals = new ArrayList<>();
+		ArrayList<Asteroid> asteroidremovals = new ArrayList<>();
+		
+		for (int i = 0; i < ship.getBullets().size(); i++) {
+			ship.getBullets().get(i).paint(brush, Color.cyan);
+			ship.getBullets().get(i).move();
+			if (ship.getBullets().get(i).outOfBounds()) {
+				bulletremovals.add(new Integer(i));
+			} else {
+				for (Asteroid asteroid : randomAsteroids) {
+					if (asteroid.contains(ship.getBullets().get(i).getCenter())){
+						asteroidremovals.add(asteroid);
+						bulletremovals.add(new Integer(i));
+					}
+				}
+			}
+			
+		}
+		
+		for (Integer i : bulletremovals) {
+			ship.removeBullet(i);
+		}
+		
+		for (Asteroid a : asteroidremovals) {
+			randomAsteroids.remove(a);
+		}
+		
+		if (randomAsteroids.size() == 0) {
+			brush.setColor(Color.black);
+			brush.fillRect(0,0,width,height);
+			brush.setColor(Color.white);
+			brush.drawString("You Win!",380,290);
+			on = false;
+		}
+		
+		if (lives == 0) {
+			brush.setColor(Color.black);
+			brush.fillRect(0,0,width,height);
+			brush.setColor(Color.white);
+			brush.drawString("You Lose!",380,290);
+			on = false;
+		}
+		
 	}
-	
+
 	// Create a certain number of stars with a given max radius
-
 	public Star[] createStars(int numberOfStars, int maxRadius) {
-
 		Star[] stars = new Star[numberOfStars];
-		for (int i = 0; i < numberOfStars; ++i) {
-			Point center = new Point
-			(Math.random() * SCREEN_WIDTH, Math.random() * SCREEN_HEIGHT);
+		for(int i = 0; i < numberOfStars; ++i) {
+			Point center = new Point(Math.random() * SCREEN_WIDTH, Math.random() * SCREEN_HEIGHT);
 			int radius = (int) (Math.random() * maxRadius);
-			if (radius < 1) {
+			if(radius < 1) {
 				radius = 1;
 			}
 			stars[i] = new Star(center, radius);
-
 		}
 		return stars;
 	}

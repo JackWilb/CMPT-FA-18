@@ -1,0 +1,11 @@
+Jack Wilburn and Greg Nola
+HW4 Reasoning
+
+Our program, written in assembly, is better than the assembled c code in two ways: it has less instructions and uses less 
+memory. Our code uses 9 functions and only 2 memory registers. The initial code used far more instructions and more memory 
+registers. We didn't tally up the exact number for the given code but it's clearly far more. 
+
+Additionally, our code runs much faster (on account of the fewer instructions and less memory use). We benchmarked each
+function with bash and found that our code took far less time. Our code took 0.5 seconds whereas the supplied code took
+around 1.5. This is a big speed up over the compiled C code.
+

@@ -10,6 +10,7 @@ public class Asteroid extends Polygon {
 
 	public Asteroid(Point[] inShape, Point inPosition, double inRotation) {
 		super(inShape, inPosition, inRotation);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -29,6 +30,17 @@ public class Asteroid extends Polygon {
 
 	}
 
+	// Detect if there was a collision
+	public boolean collision(Polygon poly) {
+		Point[] points = poly.getPoints();
+		for(Point p : points) {
+			if(this.contains(p)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public void move() {
 		position.x += Math.cos(Math.toRadians(rotation));
@@ -39,19 +51,15 @@ public class Asteroid extends Polygon {
 		 * x or y axis, have it re-appear from the other side.
 		 */
 		if(position.x > Asteroids.SCREEN_WIDTH) {
-            position.x -= Asteroids.SCREEN_WIDTH;
-        } else if(position.x < 0) {
-            position.x += Asteroids.SCREEN_WIDTH;
-        }
-        
-        if(position.y > Asteroids.SCREEN_HEIGHT) {
-            position.y -= Asteroids.SCREEN_HEIGHT;
-        } else if(position.y < 0) {
-            position.y += Asteroids.SCREEN_HEIGHT;
-        }
-
-		
-
+			position.x -= Asteroids.SCREEN_WIDTH;
+		} else if(position.x < 0) {
+			position.x += Asteroids.SCREEN_WIDTH;
+		}
+		if(position.y > Asteroids.SCREEN_HEIGHT) {
+			position.y -= Asteroids.SCREEN_HEIGHT;
+		} else if(position.y < 0) {
+			position.y += Asteroids.SCREEN_HEIGHT;
+		}
 	}
 }
 
